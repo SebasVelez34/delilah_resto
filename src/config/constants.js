@@ -1,0 +1,1 @@
+module.exports = DATABASE = 'delilah_resto';
