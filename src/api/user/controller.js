@@ -1,3 +1,6 @@
+const { requestErrors } = require('../../utils/utilis');
+const { createUser : createUserEntity } = require('./entity');
+
 const statusController = async (req, res) => {
     try {
         const hola = {
@@ -11,20 +14,20 @@ const statusController = async (req, res) => {
     }
 };
 
-const signin = async (req, res) => {
-    console.log(req.body);
+const createUser = async (req, res) => {
+    requestErrors(req, res);
     try {
-        const {
-            fullname,
-            nick,
-            email,
-            address,
-            phone,
-            password
-        } = req.body;
-        res.status(200).send({
-            data: fullname || "r"
+        const create = createUserEntity(req.body);
+        create.then(r =>{
+            res.status(200).send({
+                data: { message : "User created correctly" }
+            });
+        }).catch((error) => {
+            res.status(500).send({
+                error: error.sqlMessage
+            });
         });
+        
     } catch (error) {
         res.status(500).send({
             status: error.message
@@ -32,7 +35,17 @@ const signin = async (req, res) => {
     }
 };
 
+const loginUser = async (req, res)=> {
+    requestErrors(req, res);
+    try {
+        
+    } catch (error) {
+        
+    }
+}
+
 module.exports = {
     statusController,
-    signin
+    createUser,
+    loginUser
 };

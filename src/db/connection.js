@@ -1,22 +1,13 @@
 const mysql = require('mysql');
+require('dotenv').config()
+const DATABASE = 'delilah_resto' || process.env.DB_NAME ;
 
-const con = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: ""
+const con  = mysql.createPool({
+    connectionLimit : 10,
+    host            : 'localhost',
+    user            : 'root',
+    password        : '',
+    database        : 'delilah_resto'
 });
-
-con.connect(function (err) {
-    if (err) throw err;
-    console.log("Connected!");
-});
-
-con.connect(function (err) {
-    con.query("CREATE DATABASE IF NOT EXISTS delilah_resto", function (err, result) {
-        if (err) throw err;
-        console.log("Database created");
-    });
-});
-
 
 module.exports = con;
