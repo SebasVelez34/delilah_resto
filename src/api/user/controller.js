@@ -1,5 +1,9 @@
+'use strict'
 const { requestErrors } = require('../../utils/utilis');
-const { createUser : createUserEntity } = require('./entity');
+const { 
+    createUser : createUserEntity,
+    loginUser: loginUserEntity 
+} = require('./entity');
 
 const statusController = async (req, res) => {
     try {
@@ -38,7 +42,18 @@ const createUser = async (req, res) => {
 const loginUser = async (req, res)=> {
     requestErrors(req, res);
     try {
-        
+        const validateUser = loginUserEntity(req.body);
+        validateUser.then(response =>{
+            res.status(200).send({
+                token: response,
+                message: "Authenticated user"
+            });
+        }).catch((error) => {
+            console.log(error);
+            res.status(500).send({
+                error: error.error
+            });
+        });
     } catch (error) {
         
     }

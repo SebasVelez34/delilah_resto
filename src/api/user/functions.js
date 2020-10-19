@@ -1,4 +1,7 @@
+'use strict'
+
 const { body, validationResult } = require('express-validator');
+const bcrypt = require('bcrypt');
 
 const validate = (method) => {
   switch (method) {
@@ -21,6 +24,12 @@ const validate = (method) => {
   }
 }
 
+const validatePassword = ({ password }, loginPassword) => {
+  if(!password || !loginPassword) return false;
+  return bcrypt.compareSync(loginPassword, password);
+}
+
 module.exports = {
-  validate
+  validate,
+  validatePassword
 }
