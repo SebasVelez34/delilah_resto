@@ -87,11 +87,30 @@ const update = (req,res) => {
     }
 }
 
+const destroy = (req,res) => {
+    requestErrors(req, res);
+    try {
+        const destroy = product.destroy(req.params);
+        destroy.then(response =>{
+            res.status(200).send(response);
+        }).catch((error) => {
+            res.status(500).send({
+                error: error
+            });
+        });
+    } catch (error) {
+        res.status(500).send({
+            error: error
+        });
+    }
+}
+
 
 
 module.exports = {
     index,
     store,
     show,
-    update
+    update,
+    destroy
 }

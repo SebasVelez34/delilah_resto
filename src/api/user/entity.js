@@ -8,7 +8,6 @@ const { validatePassword } = require('./functions');
 
 const createUser = async ({ fullname,nick,email,address,phone,password }) =>{
     const passwordHash = bcrypt.hashSync(password, 10);
-    //const verified = bcrypt.compareSync(password, passwordHash);
     return new Promise(function(resolve, reject){
         let sql = `INSERT INTO ${DATABASE}.users (fullname, nick, email, address, phone, password) VALUES ('${fullname}','${nick}','${email}','${address}',${phone},'${passwordHash}')`;
         con.query(
@@ -31,8 +30,8 @@ const loginUser = async ({ user, password }) =>{
             function(err, rows){                                                
                 if(rows){
                     if(validatePassword(rows[0],password)){
-                        const { id, nick } = rows[0];
-                        resolve(createToken({id,nick}));
+                        const { id, nick, isAdmin } = rows[0];
+                        resolve(createToken({id, nick, isAdmin}));
                     }else{
                         reject({ error: "Credentials are not valid" });
                     }

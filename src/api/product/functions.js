@@ -12,14 +12,10 @@ const validate = (method) => {
 				body("image_path", "Invalid email").isString(),
 			];
 		}
-		case "show": {
-			return [param("product", "product id does not exists").exists()];
-        }
+		case "show":
+		case "destroy":
         case "update": {
 			return [
-				body("name", "name does not exists").exists(),
-				body("price", "price does not exists").isInt().exists(),
-                body("image_path", "Invalid email").isString(),
                 param("product", "product id does not exists").exists()
 			];
 		}

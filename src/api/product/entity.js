@@ -37,7 +37,7 @@ const show = ({ product }) => {
 			if (rows) {
 				resolve(rows[0]);
 			} else {
-				reject("Products not found");
+				reject({ message: "Product not found" });
 			}
 		});
 	});
@@ -45,15 +45,39 @@ const show = ({ product }) => {
 
 const update = ({ product }, { name, image_path, price }) => {
 	return new Promise(function (resolve, reject) {
-		let sql = `UPDATE ${DATABASE}.products
-                    SET name='${name}', image_path='${image_path}', price=${price}
-                    WHERE id='${product}';
-        `;
+		if (!name && !image_path && !price) {
+			reject({ message: "All fields are empty to update the product" });
+		}
+		let sqlSelect = `SELECT * FROM ${DATABASE}.products where id='${product}'`;
+		con.query(sqlSelect, function (err, rows) {
+			if (rows) {
+				name = !name ? rows[0].name : name;
+				image_path = !image_path ? rows[0].image_path : image_path;
+				price = !price ? rows[0].price : price;
+
+				let sql = `UPDATE ${DATABASE}.products SET name='${name}',image_path='${image_path}',price='${price}' WHERE id='${product}';`;
+				con.query(sql, function (err, rows) {
+					if (rows) {
+						resolve({ message: "Product updated correctly" });
+					} else {
+						reject({ message: "Erro updating product" });
+					}
+				});
+			} else {
+				reject({ message: "Product not found" });
+			}
+		});
+	});
+};
+
+const destroy = ({ product }) => {
+	return new Promise(function (resolve, reject) {
+		let sql = `DELETE FROM ${DATABASE}.products where id='${product}'`;
 		con.query(sql, function (err, rows) {
 			if (rows) {
-				resolve("Product updated correctly");
+				resolve({ message: "Product deleted correctly" });
 			} else {
-				reject("Product not found");
+				reject({ message: "Product not found" });
 			}
 		});
 	});
@@ -64,4 +88,5 @@ module.exports = {
 	store,
 	show,
 	update,
+	destroy,
 };
