@@ -1,4 +1,5 @@
 const con = require("../../db/connection");
+const { getTotalOrder, getDescription } = require("./functions");
 require("dotenv").config();
 const DATABASE = process.env.DB_NAME;
 
@@ -15,19 +16,36 @@ const all = () => {
 	});
 };
 
-const store = ({ name, price, image_path = "" }, user) => {
+const store = async ({ products, payment_method }, user) => {
+	const total = await getTotalOrder(products);
+	const description = await getDescription(products);
+	const dateNow = new Date().toISOString().slice(0, 10);
+	const timeNow = new Date().toISOString().slice(11, 16);
 	return new Promise(function (resolve, reject) {
-		let sql = `INSERT INTO ${DATABASE}.products
-                    (name, image_path, price, creator_user_id)
-                    VALUES('${name}', '${image_path}', ${price}, ${user.id});`;
+		let sql = `INSERT INTO ${DATABASE}.orders (user_id, payment_method, total, status_id, \`date\`, \`time\`, description, created_at) VALUES(${user.id}, '${payment_method}', ${total}, 1, '${dateNow}', '${timeNow}', '${description}', '${dateNow} ${timeNow}');`;
 		con.query(sql, function (err, rows) {
 			if (rows) {
-				resolve("Product created correctly");
+				const { insertId: orderId } = rows;
+				storeOrderProduct({ products, orderId, dateNow, timeNow },()=>{
+                    resolve("Order created correctly");
+                });
 			} else {
+				console.log(err);
 				reject("Error creating product");
 			}
 		});
 	});
+};
+
+const storeOrderProduct = ({ products, orderId, dateNow, timeNow },callback) => {
+	products.forEach((product) => {
+		let sql = `INSERT INTO ${DATABASE}.orders_products (order_id, product_id, quantity, status_id,created_at) 
+                    VALUES(${orderId}, '${product.product_id}', ${product.quantity}, 1, '${dateNow} ${timeNow}');`;
+		con.query(sql, function (err, rows) {
+			if (err) console.log(err);
+		});
+    });
+    callback();
 };
 
 const show = ({ product }) => {
@@ -83,24 +101,10 @@ const destroy = ({ product }) => {
 	});
 };
 
-const productsIn = (ids) => {
-	return new Promise(function (resolve, reject) {
-		let sql = `SELECT * FROM ${DATABASE}.products where id in (${ids})`;
-		con.query(sql, function (err, rows) {
-			if (rows) {
-				resolve(rows);
-			} else {
-				reject({ message: "Products not found" });
-			}
-		});
-	});
-};
-
 module.exports = {
 	all,
 	store,
 	show,
 	update,
 	destroy,
-	productsIn
 };

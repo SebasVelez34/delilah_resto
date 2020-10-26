@@ -1,7 +1,6 @@
 "use strict";
 
-const { body, param, validationResult } = require("express-validator");
-const bcrypt = require("bcrypt");
+const { body, param } = require("express-validator");
 
 const validate = (method) => {
 	switch (method) {
