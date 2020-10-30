@@ -31,14 +31,6 @@ NodeJS
 6. Correr el comando en terminal `npm run setupdb` para crear las tablas en la base de datos
 7. Correr el comando en terminal `npm run migrate:seed` para crear los registros predefinidos
 
-## Despliegue 📦
-
-Para realizar un despligue, basta con ejecutar el comando `npm heroku-postbuild`
-Este comando compilará la carpeta backend para dar una versión del servidor y posteriormente creará una versión build de la carpeta frontend. 
-
-URL del aplicativo en Heroku
-https://amatzon-marketplace.herokuapp.com/
-
 ## Autores ✒️
 
 * **Sebastián Vélez Velásquez** -  [Sebastián Vélez](https://github.com/SebasVelez34)
