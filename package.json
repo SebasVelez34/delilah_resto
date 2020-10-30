@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "nodemon ./bin/www",
-    "setupdb": "node src/db/migrations/index.js"
+    "setupdb": "node src/db/migrations/index.js",
+    "migrate:seed": "node src/db/seeds/index.js"
   },
   "dependencies": {
     "bcrypt": "^5.0.0",

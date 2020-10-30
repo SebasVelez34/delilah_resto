@@ -31,7 +31,7 @@ const store = (req, res) => {
     try {
         const store = product.store(req.body, req.user);
         store.then(response =>{
-            res.status(200).send({
+            res.status(201).send({
                 data: response
             });
         }).catch((error) => {

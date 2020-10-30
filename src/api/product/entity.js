@@ -60,7 +60,7 @@ const update = ({ product }, { name, image_path, price }) => {
 					if (rows) {
 						resolve({ message: "Product updated correctly" });
 					} else {
-						reject({ message: "Erro updating product" });
+						reject({ message: "Error updating product" });
 					}
 				});
 			} else {
