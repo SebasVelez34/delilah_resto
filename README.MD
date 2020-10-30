@@ -11,7 +11,7 @@ _Se debe tener instalado en la máquina los siguientes paquetes_
 ```
 Npm
 NodeJS
-
+MySql
 ```
 
 ### Instalación 🔧
