@@ -21,11 +21,13 @@ NodeJS
 3. Crear un archivo .env en la raiz del proyecto
 4. Crear la base de datos
 5. Insertar en el archivo .env las siguientes variables
+```
     DB_HOST = host de la base de datos
     DB_NAME = nombre de la base de datos como quieres que se llame
     DB_USER = tu usuario de base de datos
     DB_PASSWORD = tu contraseña de base de datos
     PRIVATE_KEY = 1io23bj(/()"(//(87)))k12b3cacvdhs89%&$/
+```
 6. Correr el comando en terminal `npm run setupdb` para crear las tablas en la base de datos
 7. Correr el comando en terminal `npm run migrate:seed` para crear los registros predefinidos
 
