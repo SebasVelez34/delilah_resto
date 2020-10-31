@@ -337,7 +337,7 @@ paths:
                 $ref: '#/components/schemas/OrderRequired'
         description: Orden para añadir
   '/order/{order}':
-    post:
+    put:
       tags:
         - order
       summary: Actualizar estado de un pedido en el sistema
@@ -369,6 +369,28 @@ paths:
                     type: integer
                     example: 1
         description: Estado para actualizar el pedido
+    delete:
+       tags:
+        - order
+      summary: Eliminar un pedido en el sistema
+      operationId: DeleteOrder
+      description: Eliminar un pedido en el sistema
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: 'order'
+          required: true
+          schema:
+            type: integer
+          description: ID de la orden
+      responses:
+        '200':
+          description: Orden Eliminada
+        '403':
+          description: Sin autorización para acceder al recurso
+        '500':
+          description: Error en los parametros enviados o en el procesado del recurso
   /login:
     post:
       tags:

@@ -1,8 +1,10 @@
 'use strict'
-const { requestErrors } = require('../../utils/utilis');
-const { 
-    createUser : createUserEntity,
-    loginUser: loginUserEntity 
+const {
+    requestErrors
+} = require('../../utils/utilis');
+const {
+    createUser: createUserEntity,
+    loginUser: loginUserEntity
 } = require('./entity');
 
 const statusController = async (req, res) => {
@@ -22,16 +24,17 @@ const createUser = async (req, res) => {
     requestErrors(req, res);
     try {
         const create = createUserEntity(req.body);
-        create.then(r =>{
+        create.then(r => {
             res.status(200).send({
-                data: { message : "User created correctly" }
+                data: {
+                    message: "User created correctly"
+                }
             });
         }).catch((error) => {
             res.status(500).send({
                 error: error.sqlMessage
             });
         });
-        
     } catch (error) {
         res.status(500).send({
             status: error.message
@@ -39,11 +42,11 @@ const createUser = async (req, res) => {
     }
 };
 
-const loginUser = async (req, res)=> {
+const loginUser = async (req, res) => {
     requestErrors(req, res);
     try {
         const validateUser = loginUserEntity(req.body);
-        validateUser.then(response =>{
+        validateUser.then(response => {
             res.status(200).send({
                 token: response,
                 message: "Authenticated user"
@@ -55,7 +58,7 @@ const loginUser = async (req, res)=> {
             });
         });
     } catch (error) {
-        
+
     }
 }
 

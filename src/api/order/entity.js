@@ -1,25 +1,34 @@
 const con = require("../../db/connection");
-const { getTotalOrder, getDescription } = require("./functions");
+const {
+	getTotalOrder,
+	getDescription
+} = require("./functions");
 require("dotenv").config();
 const DATABASE = process.env.DB_NAME;
 
 const allOrderProducts = (user_id) => {
 	return new Promise(function (resolve, reject) {
 		let sql = `SELECT o.*,op.* FROM ${DATABASE}.orders o
-					INNER JOIN ${DATABASE}.orders_products op 
-					ON op.order_id  = o.id`;
+					INNER JOIN ${DATABASE}.orders_products op
+					ON op.order_id  = o.id
+					WHERE isActive=true`;
 		if (user_id) sql += ` WHERE user_id=${user_id};`;
 		con.query(sql, function (err, rows) {
 			if (rows) {
 				resolve(rows);
 			} else {
-				reject({ error: "Orders not found" });
+				reject({
+					error: "Orders not found"
+				});
 			}
 		});
 	});
 };
 
-const store = async ({ products, payment_method }, user) => {
+const store = async ({
+	products,
+	payment_method
+}, user) => {
 	const total = await getTotalOrder(products);
 	const description = await getDescription(products);
 	const dateNow = new Date().toISOString().slice(0, 10);
@@ -29,8 +38,15 @@ const store = async ({ products, payment_method }, user) => {
 				   VALUES(${user.id}, '${payment_method}', ${total}, 1, '${dateNow}', '${timeNow}', '${description}', '${dateNow} ${timeNow}');`;
 		con.query(sql, function (err, rows) {
 			if (rows) {
-				const { insertId: orderId } = rows;
-				storeOrderProduct({ products, orderId, dateNow, timeNow }, () => {
+				const {
+					insertId: orderId
+				} = rows;
+				storeOrderProduct({
+					products,
+					orderId,
+					dateNow,
+					timeNow
+				}, () => {
 					resolve("Order created correctly");
 				});
 			} else {
@@ -41,8 +57,12 @@ const store = async ({ products, payment_method }, user) => {
 	});
 };
 
-const storeOrderProduct = (
-	{ products, orderId, dateNow, timeNow },
+const storeOrderProduct = ({
+		products,
+		orderId,
+		dateNow,
+		timeNow
+	},
 	callback
 ) => {
 	products.forEach((product) => {
@@ -55,15 +75,43 @@ const storeOrderProduct = (
 	callback();
 };
 
-const update = ({ order }, { status_id }) => {
+const update = ({
+	order
+}, {
+	status_id
+}) => {
 	return new Promise(function (resolve, reject) {
 		let sql = `UPDATE ${DATABASE}.orders SET status_id=${status_id} WHERE id='${order}';`;
 		con.query(sql, function (err, rows) {
 			console.log(err);
 			if (rows) {
-				resolve({ message: "Order updated correctly" });
+				resolve({
+					message: "Order updated correctly"
+				});
 			} else {
-				reject({ message: "Error updating order" });
+				reject({
+					message: "Error updating order"
+				});
+			}
+		});
+	});
+};
+
+const destroy = ({
+	order
+}) => {
+	return new Promise(function (resolve, reject) {
+		let sql = `UPDATE ${DATABASE}.orders SET isActive=0 WHERE id='${order}';`;
+		con.query(sql, function (err, rows) {
+			console.log(err);
+			if (rows) {
+				resolve({
+					message: "Order delete correctly"
+				});
+			} else {
+				reject({
+					message: "Error deleting order"
+				});
 			}
 		});
 	});
@@ -73,4 +121,5 @@ module.exports = {
 	allOrderProducts,
 	store,
 	update,
+	destroy
 };
